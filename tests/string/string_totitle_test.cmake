@@ -109,17 +109,30 @@ function(test)
   assert("${res}" STREQUAL "This vs That")
 
   set(res "")
-  # v changed to lower case
+  # colo(u)r not changed to lower case
   set(str "this is not a colo(u)r?")
   string_totitle("${str}")
   ans(res)
   assert("${res}" STREQUAL "This Is Not a colo(u)r?")
 
   set(res "")
-  # v changed to lower case
+  # a at beginning (after quotes) changed to uppercase
   set(str "'a test'")
   string_totitle("${str}")
   ans(res)
-  set(expected "'A Test'")
   assert("${res}" STREQUAL "'A Test'")
+
+  set(res "")
+  # quotes and a subsequent subsentence
+  set(str "'a test': the subsentence")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "'A Test': The Subsentence")
+
+  set(res "")
+  # quotes and a subsequent subsentence
+  set(str "'a test': 'the subsentence'")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "'A Test': 'The Subsentence'")
 endfunction()
