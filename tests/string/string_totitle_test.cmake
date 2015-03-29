@@ -1,41 +1,30 @@
 function(test) 
-  #set(word "testing#tok(e)nizer#((a))#'subsentence')")##word#"Well:#!hello.#there?#'whathave
+  set(res "")
+  # single word changed to upper case
+  set(str "else")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "Else")
 
-  ##string_encode_list(${word})
-  ##ans(str_encoded)
-  ##message("${str_encoded}")
-
-  ##set(subsentence#"[!:.?']+")
-  ##set(bracket#"[\\(\\)]+")
-  ##set(bracketc#"[\\)]+")
-  ##set(other#"[^#!:.?'\\(\\)]+")##[a-zA-Z0-9]+
-  ##set(ws#"[#]+")
-  ###string(REGEX#REPLACE#"(${subsentence})|(${other})|(${ws})"#""#error#"${str_encoded}")
-  ###if(error)#
-  ###message("failed#to#tokenize#string")
-  ###return()
-  ###endif()
-  ##string(REGEX#MATCHALL#"(${subsentence})|(${ws})|(${bracket})|(${other})"#words#"${str_encoded}")
-  ##foreach(token#${words})
-  ##message("token=[${token}]")
-  ##endforeach()
-  ##return()
-
-    set(res "")
+  set(res "")
   # v changed to lower case
   set(str "this V that")
   string_totitle("${str}")
   ans(res)
   assert("${res}" STREQUAL "This v That")
-#return()
 
-    set(res "")
+  set(res "")
+  # v changed to lower case
+  set(str "this V that")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "This v That")
+
+  set(res "")
   # small after a subsentence (1/2)
   set(str "Subsentence: a Sub")
   string_totitle("${str}")
   ans(res)
-
-
 
   set(res "")
   # Every word upper case
@@ -100,7 +89,6 @@ function(test)
   ans(res)
   assert("${res}" STREQUAL "This v That")
 
-
   set(res "")
   # v changed to lower case
   set(str "this Vs that")
@@ -135,4 +123,25 @@ function(test)
   string_totitle("${str}")
   ans(res)
   assert("${res}" STREQUAL "'A Test': 'The Subsentence'")
+
+  set(res "")
+  # words like "that's", "it's" should be upper case also
+  set(str "'a word': 'look, that's a subsentence isn't it?")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "'A Word': 'Look, That's a Subsentence Isn't It?")
+
+  set(res "")
+  # "'" (and "," etc.) does not start a subsentence (1/2)
+  set(str "This is a word, a word")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "This Is a Word, a Word")
+
+  set(res "")
+  # "'" (and "," etc.) does not start a subsentence (2/2)
+  set(str "This is a word' a word")
+  string_totitle("${str}")
+  ans(res)
+  assert("${res}" STREQUAL "This Is a Word' a Word")
 endfunction()

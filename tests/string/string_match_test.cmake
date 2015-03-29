@@ -20,4 +20,5 @@ function(test)
   string_match("asdasd" "")
   ans(res)
   assert(res)
+
 endfunction()

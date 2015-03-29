@@ -1,4 +1,15 @@
-# transforms the specified string to title case
+## `(<str:<string>>)-><string>`
+##
+## Transforms the input string to title case.
+## Tries to be smart and keeps some words small.
+##
+## **Examples**<%
+##  set(my_title "the function string_totitle works")
+##  string_totile("${my_title}")
+##  ans(res)
+## %>
+##
+##
 function(string_totitle str)
   set(small a an and as at but by en for if in of on or the to via vs v v. vs. A An And As At But By En For If In Of On Or The To Via Vs V V. Vs.)
   set(other "[^ ]+")
@@ -9,17 +20,9 @@ function(string_totitle str)
   ans(str_encoded)
   string(REGEX MATCHALL "(${ws})|(${other})" tokens "${str_encoded}")
   
-  while(true)
-    list(LENGTH tokens length)
-    if(NOT length)
-      break()
-    endif()
-    list(GET tokens 0 token)
-    list(REMOVE_AT tokens 0)
-
-   #message("Looking at=${token}")
-    if("${token}" MATCHES "^([^a-zA-Z0-9]*)([a-zA-Z])([a-z]*)([:?!']*)$")
-     #message("Matched=${token}")
+  foreach(token ${tokens})
+    #^([^a-zA-Z0-9]*)([a-zA-Z])([a-z]*)([:?!']*)$"
+    if("${token}" MATCHES  "^([^a-zA-Z0-9]*)([a-zA-Z])([a-z]*[']?[a-z]*)([:?!',]*)$")
       set(pre ${CMAKE_MATCH_1})
       set(first_letter ${CMAKE_MATCH_2})
       set(lc_letters ${CMAKE_MATCH_3})
@@ -27,33 +30,26 @@ function(string_totitle str)
       
       list(FIND small "${first_letter}${lc_letters}" index)
       if(index GREATER -1)
-       #message("Found small=${token}")
-        if(is_subsentence)
-         #message("To upper small=${token}")
-          string(TOUPPER ${first_letter} first_letter)
+         if(is_subsentence)
+             string(TOUPPER ${first_letter} first_letter)
         else()
-         #message("To lower small=${token}")
-          string(TOLOWER ${first_letter} first_letter)
+             string(TOLOWER ${first_letter} first_letter)
         endif()
       else()
-       #message("Make upper case=${token}")
-        string(TOUPPER ${first_letter} first_letter)
+         string(TOUPPER ${first_letter} first_letter)
       endif()
       
-      #message("post=${post}")
-      if(NOT post)
-       #message("Subsentence disabled")
-        set(is_subsentence false)
-      else()
-       #message("Subsentence enabled")
+      if("${post}" MATCHES "[^,']")
         set(is_subsentence true)
+      else()
+        set(is_subsentence false)
       endif()
 
       set(token "${pre}${first_letter}${uc_letters}${lc_letters}${post}")
     endif()
 
     set(res "${res}${token}")
-  endwhile()
+  endforeach()
 
   return_ref(res)
 endfunction()
